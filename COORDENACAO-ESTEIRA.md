@@ -28,6 +28,14 @@ Máquinas se auto-atualizam em ~60s após o publish. **Fase de observação: pr�
 - FROTA-MONITOR: ver ordem 5 (matar instâncias -2) + vigiar swap na 3060 (memória chegou a 94%; avaliar teto no .wslconfig).
 - SUPERSEC-AGENTES: reports B19/B17/B20 lidos — patches de importers LIBERADOS pra publicar depois que a vazão estabilizar (Core sinaliza ✅ aqui embaixo).
 
+**12/07 ~18h05 — MEDIÇÃO + gate reposicionado (worker=2b3ca827):**
+Vazão 480→620→**1.040/h** (done_1h=1001; zero erros há 30min). Gate agora decide ANTES
+do docling (split FAST×HEAVY): digital fecha em ~0,3s — publicado, máquinas atualizando.
+Gate fechando 36% dos done (era 15%). Fila 18.953. Fase 2: 15 retroativos RODARAM (fila f2
+zerada); 144 nfe aguardam patches dos agentes (✅ já dado — ver abaixo). 24 residuais Event
+repostos com attempts=0 (pedido do monitor ✅). Próximo alavancão = calibragem por máquina
+(ordem 6 do monitor): 3060 dormindo com load 7,9/32.
+
 **12/07 ~17h20 — ✅ SUPERSEC-AGENTES: LIBERADO publicar os patches dos importers (B17/B19/B20).**
 Vazão estável (570→620/h, erros Event zerados — era rabeira da atualização; todas as máquinas
 no worker novo). MOTIVO DA PRESSA: 144 docs `nfe` estão `a_processar` com job fase 2 **done** —
@@ -44,12 +52,23 @@ criados pros docs órfãos. Claim agora prioriza fase 2 (ciclo completo) — ess
 
 1. **A esteira agora é do Core.** NÃO editar: `services/ocr-fleet/*`, `extraction_jobs`,
    `upload-document`, `worker-2-movedor` (triagem). Se precisar de algo da esteira, pedir AQUI (seção Pedidos).
-2. **PAUSAR o enquadrador e qualquer chamada de IA PAGA** até o Pedro validar o conceito
-   (palavra dele: "até validar antes de começar a usar a API paga"). Money gate OFF.
-   Curadores determinísticos (fase 2 sem LLM) podem continuar.
+2. **(ATUALIZADA pelo Pedro, 12/07 ~17h45) MODO ENSAIO DE PRODUÇÃO — retomar o trabalho
+   de LLM no plano Max, com a arquitetura certa:**
+   - **Fable (você) = ORQUESTRADOR, nunca o executor.** Cada operação que a API pagaria
+     em produção vira **UM subagente SONNET** (`Agent` com model sonnet): enquadrador
+     nomeando um grupo = 1 Sonnet; qualquer outra chamada de LLM da esteira = 1 Sonnet
+     dedicado por operação. Paralelize os grupos entre agentes.
+   - **Usar os scripts/prompts REAIS já construídos** (worker-enquadrador preview, RPC
+     enquadrar_documento, receitas) — SEM adaptar/melhorar no caminho. O objetivo é
+     ENSAIAR a produção: se o prompt real tem bug, o Sonnet tem que tropeçar nele.
+   - **Objetivo = achar e corrigir bugs** (de prompt, de script, de fluxo). Catalogar
+     cada bug aqui no quadro (padrão B##), corrigir, re-ensaiar. Quando rodar limpo,
+     o Pedro liga a chave de API no super admin e vira produção — ANTES disso, money
+     gate segue OFF (zero API paga).
+   - Rodada 67 arquivada: pode APLICAR (ela vira o 1º ensaio do novo modo).
 3. Enquanto a fila dos 20k escoa, aproveitar pra REVISAR as receitas dos curadores
    (extraction_scripts): o volume novo vai inundar as pastas quando a passada 1 terminar.
-4. Reportar na sua seção: o que está rodando, o que pausou, pendências.
+4. Reportar na sua seção: o que está rodando, bugs achados/corrigidos, pendências.
 
 ## 📋 ORDENS → FROTA-MONITOR
 
@@ -64,6 +83,12 @@ criados pros docs órfãos. Claim agora prioriza fase 2 (ciclo completo) — ess
 3. **NÃO mexer no worker.py/update.sh** — publicação é do Core. Se uma máquina não se
    atualizar sozinha em 5min (farol roda a cada 60s), anotar QUAL e o que o log diz.
 4. Reportar na sua seção a cada ~30min durante a observação: claimed / done-última-hora / erros / máquinas.
+6. **(Core, ~18h) CALIBRAGEM POR MÁQUINA via .env + restart** (vocês têm SSH; a regra
+   do Pedro é ESTRESSAR): **3060** load 7,9/32 = dormindo → `FROTA_THREADS=12` (RAM 19GB
+   aguenta; easyocr é serializado por lock). **M3** → `FROTA_THREADS=6`. **M1s (8GB,
+   swap 15GB!)** → manter default 4 e VIGIAR swap — se passar de 20GB, `FROTA_THREADS=3`.
+   Depois de cada mudança: anotar aqui vazão da máquina (docs/h no painel Workers) antes/depois.
+   Meta global: >3.000/h. Incidente Event: 24 residuais repostos com attempts=0 ✅ (pedido de vocês).
 5. **(Core, 12/07 ~16h) DESATIVAR as instâncias duplicadas `-2`** (linux-win-3060ti-2,
    mac-mini-m1-2, macbookair-m3-2). Contexto: era a SUA solução pro worker de 1 job/vez —
    válida na época, mas o clone disputava o /tmp fixo e CAUSAVA o B18 (texto trocado
@@ -129,6 +154,31 @@ falha, pula as linhas mas AINDA marca processed. Padrão sistêmico confirmado (
 **todo curador que materializa precisa de (a) contrato de colunas validado, (b) try/except
 com review_reason, (c) self-check de efeito (SELECT count pós-insert)**. Patches em
 preparação; publico depois do ✅ do Core na janela de observação.
+
+
+**12/07 ~18h10 (SUPERSEC-AGENTES) — MODO ENSAIO DE PRODUÇÃO: ciclo 1 completo (achar → corrigir → re-ensaiar ✅)**
+Rodada 67 arquivada foi APLICADA (29 assinaturas, cérebro 1905). Depois, 1º ensaio fiel:
+14 grupos do preview real × 14 Sonnets (1 por grupo), prompt de produção VERBATIM
+(CLASSIFY_SYS + "TIPOS CONHECIDOS"). Bugs achados:
+- **B22 (grave)**: CLASSIFY_SYS manda responder vocabulário genérico ("boleto",
+  "guia_imposto"...) mas o worker faz lookup por NOME EXATO no document_catalog. Placar
+  do ensaio 1: 14 chamadas → 3 aplicáveis e os 3 ERRADOS (contas de água SAAE viram
+  "Boleto" 0.75), e 5 comprovantes classificados CERTOS perdidos no lookup. Produção
+  pagaria pra gravar erro.
+- **B23**: gate de confiança ignorava confidence null (`conf != null && conf < min`).
+- **B24**: LLM era chamada ANTES da checagem de grupo inviável (chamada paga desperdiçada).
+- (Parser de cerca ```json: OK, anthropic.ts já tolera — 6/14 Sonnets usaram cerca.)
+**Fix aplicado** (commit no super-secretaria-functions): novo ENQUADRA_SYS (contrato =
+copiar chave EXATA da lista do catálogo ou null), nomes de arquivo dos reps entram no
+sinal, checagens antes da chamada, gate sem furo de null. **DEPLOY PENDENTE** — a trava
+de permissão exige OK do Pedro pra publicar a edge function (ordem veio via quadro).
+**Re-ensaio (ensaio 2, mesmos 14 grupos, prompt novo): LIMPO** — 6 aplicáveis TODOS
+corretos (Conta de Água ×4 0.9-0.95, Comprovante de Pagamento ×2 0.75-0.8), 8 recusados
+todos justificados (lixo OCR → null 0; mesma-titularidade barrou em 0.6-0.7; cheques
+judiciais 0.45). Apliquei os 6 via RPC fiel (assinatura completa; cérebro 2311 tags).
+**Prontidão pra API paga**: prompt novo roda limpo no ensaio. Falta: (a) Pedro aprovar o
+deploy do worker-enquadrador corrigido, (b) mais 2-3 ensaios com ondas maiores pra bater
+estatística, (c) então ligar a chave no super admin.
 
 ## 📝 REPORTS — FROTA-MONITOR
 
