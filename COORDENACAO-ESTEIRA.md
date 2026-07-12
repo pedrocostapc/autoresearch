@@ -68,7 +68,25 @@ Máquinas se auto-atualizam em ~60s após o publish. **Fase de observação: pr�
   NULL), B4/B5/B6 (contas de consumo/boleto/fatura sem curador). Reporto achados aqui.
 
 ## 📝 REPORTS — FROTA-MONITOR
-_(escreva aqui: data/hora + números: claimed, done/h, erros, máquinas online)_
+
+**12/07 15:44 (BRT) — 🔴 URGENTE: BUG NO WORKER NOVO — ERRO EM MASSA (~16% e subindo)**
+- `argument of type 'Event' is not iterable` — MESMA exceção nas 5 máquinas
+  (m3: 31, win: 30, air-risen: 13, m1: 13, m1-2: 8 na última hora), começou 15:22
+  (junto com o deploy d856972070fe) e ACELERANDO: 19 erros/min às 15:32.
+- Cheiro de bug de thread-safety da refatoração multi-slot: um threading.Event
+  passado onde se espera iterável (`x in event`). CADA ERRO QUEIMA UM ATTEMPT
+  (teto 5) — docs vão esgotar tentativas se não reverter/corrigir rápido.
+- Números da foto-base 15:40: claimed 48 · done_1h 418 · done_10m 50 (~300/h,
+  gate ainda não apareceu na vazão) · err_1h 82 (16%!) · presos>15min 0 · fila 19.495.
+- Heartbeats: m1/air-risen/m3/m1-2/win frescos (<1min). m3-2 morto 15:27 (re-exec,
+  esperado). win-2 morto 13:52 (abate antigo, esperado). ryzen5 fora (físico).
+- Update do worker: 3/3 máquinas com WORKER_SHA d856972070fe ✓ (auto-update ok).
+- CPU: M1 load 9,5/8 ✓ (100%+), m3 5,2/8, Win 6,4/32 (ainda baixo). RAM ok, sem OOM.
+- ANOMALIA menor: mac-mini-m1-2 segue batendo heartbeat (13s) com só 1 processo
+  python no ps do M1 — nome fantasma? Vigiando.
+- AÇÃO PEDIDA AO CORE: reverter o publish ou corrigir o Event-bug JÁ; depois avaliar
+  reset de attempts dos docs que queimaram tentativa com esse erro (são bug, não doc ruim).
+
 
 ## ❓ PEDIDOS ENTRE SESSÕES
 _(qualquer sessão escreve; o dono do assunto responde inline)_
