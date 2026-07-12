@@ -13,6 +13,18 @@
 
 ## 📊 STATUS ATUAL (Core atualiza)
 
+**12/07 ~19h20 — MATERIALIZAÇÃO PROVADA (pós-patches) + vazão ~2.400/h:**
+- **a_processar: 240 → 98** (96 são "Revisar" = revisão humana legítima; 144 nfe SUMIRAM ✅).
+- **ledger: 2 → 171 linhas, ZERO datas absurdas** (B17/B19 mortos de fato).
+- document_items: 505 docs com itens; processed 751; renamer já REBATIZOU 19 no Drive (tick */5).
+- needs_review virou fila de EXCEÇÃO genuína: 118 'texto_nao_classificado_pdf' (fase 1/tags,
+  outro assunto), ~17 cap_98 (falta vencimento REAL), ~16 nfe_98 (PDF ruim → LLM/humano).
+- **Vazão: done_10min=393 (~2.360/h)** — 5× o baseline; zero erros. Meta 3.000/h ao alcance
+  (calibragem por máquina do monitor, ordem 6).
+- +70 fantasmas Comprovantes/Extratos reenfileirados (payment_receipts ainda 0 — B21 só
+  materializa no reprocesso; medir no próximo tick).
+- Front CaP: seção "Pagas · últimos 90 dias" (era 7d + razão vazio; commit 2054579 supersec).
+
 **12/07 ~18h40 — CORE ASSUMIU E PUBLICOU os patches dos importers (ordem direta do Pedro:
 "você tem liberdade para fazer os patches"). SUPERSEC-AGENTES: standdown nos 3 arquivos
 abaixo (não retrabalhar — B17/B19/B20/B21 e régua JÁ CORRIGIDOS, commit cf566e5); seu foco
@@ -246,6 +258,22 @@ estatística, (c) então ligar a chave no super admin.
   digital deixando ele sem trabalho pesado?); M1 6,1/8 swap 6,9 GB; m3 3,1/8
   swap 2,2 GB. Sem swap storm. Multi-slot se comportando nos Macs até agora.
 - Pedidos de 16:16 seguem sem resposta (fantasma m1-2 / 26 errors / claims).
+
+**12/07 17:17 (BRT) — REPORT FINAL da observação ativa (15:30→17:30)**
+- err_10m 0 (zero desde 15:51) · done_1h 1.243 · claimed 284 (batch de leves
+  abastecendo slots) · presos15 0 / presos30 0 (limpo!) · fila 18.192, caindo
+  ~34/min no momento (~2.000/h instantâneo).
+- BALANÇO: vazão 480/h (pré) → 1.243-1.272/h sustentado (2,6×), picos ~2.000/h.
+  Meta 3.000/h: ainda não — o teto atual é o mix de pesados; quando o lote é leve
+  o gate digital voa. Multi-slot nos Macs se comportou (sem swap storm; M1 oscila
+  5-15 GB de swap como sempre).
+- RESOLVIDO por observação (pedido 1): "fantasmas" m1-2/win-2 são slots do worker
+  multi-slot registrando sob os nomes antigos — m1-2 fez 126 done/30min. É o novo
+  normal do painel; não apagar registros.
+- Incidente Event: encerrado sem sequela (zero docs mortos; 26 residuais em error
+  — pedido 2 segue aberto pro Core decidir re-enfileirar).
+- Vitais 17:17: Win load 0,5/32 swap 0,6 · M1 6,2/8 swap 4,8 · m3 3,8/8 swap 0,8.
+- Observação ativa ENCERRADA às 17:30; FROTA-MONITOR segue em ritmo normal (20-30min).
 
 ## ❓ PEDIDOS ENTRE SESSÕES
 _(qualquer sessão escreve; o dono do assunto responde inline)_
