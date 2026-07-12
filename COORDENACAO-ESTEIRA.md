@@ -20,6 +20,17 @@ sem memória: LER este quadro + aquele update = contexto inteiro de volta.
 
 ## 📊 STATUS ATUAL (Core atualiza)
 
+**12/07 ~20h15 — fase MIOLO DURO da fila (retrato honesto):**
+- Digitais fáceis do topo ACABARAM → vazão caiu p/ ~500/h (fracas em scans de 45s;
+  3060 entalada de propósito nos grandões 95 — docling 12-18min/job, 0 done/15min mas viva).
+- Fila 17.185 · erros 0 · ledger 322 · renomeados 303 · processed 893 · receipts 59.
+- `texto_nao_classificado` 118→1.285 = enquadrador pausado acumulando desconhecidos —
+  É O ESTOQUE DOS ENSAIOS SONNET (agentes): rodem, que essa pilha vira pasta conhecida.
+- Destrava ritmo: calibragem ordem 6 (monitor) · madrugada sem humano (governador 100%) ·
+  ensaios dos agentes. Extratos (834) ainda não alcançados pela varredura (ordem de chegada).
+- Core em modo economia (limite semanal); esteira é AUTÔNOMA — cron/worker não precisam
+  de sessão viva. Próxima checagem espaçada.
+
 **12/07 ~19h55 — CONSOLIDAÇÃO: meta de vazão BATIDA (~3.500/h) + materialização viva:**
 - **payment_receipts 0 → 59** (B21 morto; página Comprovantes acesa) · ledger 193 ·
   **renomeados no Drive: 179** (tick */5) · bank_statement_lines 0 (extratos ainda
@@ -300,6 +311,20 @@ ensaios maiores → aí ligar API paga. Auditoria de curadores B17/B19/B20/B21 e
   — pedido 2 segue aberto pro Core decidir re-enfileirar).
 - Vitais 17:17: Win load 0,5/32 swap 0,6 · M1 6,2/8 swap 4,8 · m3 3,8/8 swap 0,8.
 - Observação ativa ENCERRADA às 17:30; FROTA-MONITOR segue em ritmo normal (20-30min).
+
+**12/07 18:25 (BRT) — ORDENS 5 e 6 EXECUTADAS (calibragem autorizada pelo Pedro no chat)**
+- Ordem 5 (desativar -2): JÁ ESTAVA CUMPRIDA — censo 18:15: 1 processo por máquina,
+  nenhum clone renasceu (morreram no re-exec de 15:22). Os nomes -2 no painel são
+  SLOTS do worker novo reportando sob nomes antigos (m1-2 fez 126 done/30min às
+  17:03) — não apagar, é o novo normal.
+- Ordem 6 (calibragem): M3 → FROTA_THREADS=6 no .env + restart 18:20 (worker novo
+  PID 56526). Win → FROTA_THREADS=12 + restart 18:24 em janela de custo ZERO (0
+  claims em curso; systemctl exige auth interativa, usei kill + systemd renasce —
+  PID 823920). M1 → mantido default 4; swap 17,8 GB às 18:11, vigio >20 → THREADS=3.
+- VAZÕES-BASE pra comparação (30min, pré-calibragem): m3 87 · m1+m1-2 96 ·
+  air-risen 57 · win 234 (última janela ativa 17:03; 18:11 estava 0 — todos os
+  slots mastigando contratos gigantes por 30min+). Meço depois e anoto aqui.
+- Nota: air-risen segue sem SSH (não calibrável por mim) e ryzen5 desligado.
 
 ## ❓ PEDIDOS ENTRE SESSÕES
 _(qualquer sessão escreve; o dono do assunto responde inline)_
