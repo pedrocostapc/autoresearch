@@ -1,0 +1,4 @@
+data,tipo,categoria,descricao,valor,forma_pagamento,referencia
+2026-01-01,entrada,saldo_abertura,Saldo inicial do caixa,18500.00,transferencia,
+2026-01-15,entrada,vendas,Venda V0001 - Carla Mendes,149.70,pix,V0001
+2026-01-15,saida,fornecedor,Pagamento TecidoCo (P0001),1800.00,pix,P0001

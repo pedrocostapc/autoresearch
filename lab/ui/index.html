@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cérebro — lab/</title>
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1115; --panel: #171a21; --panel2: #1e222b; --border: #2a2f3a;
+    --text: #d6dae3; --dim: #8b93a3; --accent: #6ea8fe; --green: #4ade80;
+    --amber: #fbbf24; --red: #f87171; --purple: #c084fc;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.55 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+         background: var(--bg); color: var(--text); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .layout { display: flex; min-height: 100vh; }
+  nav { width: 215px; flex-shrink: 0; background: var(--panel); border-right: 1px solid var(--border);
+        padding: 18px 12px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  nav h1 { font-size: 17px; margin: 4px 8px 2px; }
+  nav .sub { font-size: 11.5px; color: var(--dim); margin: 0 8px 16px; }
+  nav button { display: flex; justify-content: space-between; align-items: center; width: 100%;
+        padding: 8px 10px; margin: 2px 0; border: 0; border-radius: 8px; background: none;
+        color: var(--text); font: inherit; font-size: 14px; text-align: left; cursor: pointer; }
+  nav button:hover { background: var(--panel2); }
+  nav button.active { background: var(--panel2); color: var(--accent); font-weight: 600; }
+  nav .badge { font-size: 11px; background: var(--border); border-radius: 10px; padding: 1px 7px;
+        color: var(--dim); }
+  nav .badge.warn { background: #4a3a12; color: var(--amber); }
+
+  main { flex: 1; padding: 26px 34px 60px; max-width: 1060px; }
+  h2.page { margin: 0 0 4px; font-size: 21px; }
+  .pagedesc { color: var(--dim); font-size: 13px; margin: 0 0 20px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+          padding: 16px 18px; cursor: pointer; }
+  .card:hover { border-color: var(--accent); }
+  .card .num { font-size: 30px; font-weight: 700; }
+  .card .lbl { color: var(--dim); font-size: 13px; }
+  .card .extra { font-size: 12px; color: var(--dim); margin-top: 6px; }
+
+  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+           padding: 18px 22px; margin-top: 16px; }
+  .panel h3 { margin: 0 0 10px; font-size: 15px; color: var(--dim); font-weight: 600;
+              text-transform: uppercase; letter-spacing: .04em; }
+
+  .md { line-height: 1.6; }
+  .md h1 { font-size: 20px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  .md h2 { font-size: 17px; margin-top: 24px; }
+  .md h3 { font-size: 15px; }
+  .md blockquote { margin: 8px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+                   background: var(--panel2); border-radius: 0 8px 8px 0; color: var(--dim); }
+  .md code { background: var(--panel2); padding: 1px 5px; border-radius: 5px; font-size: 13px; }
+  .md pre { background: var(--panel2); padding: 12px; border-radius: 8px; overflow-x: auto; }
+  .md pre code { background: none; padding: 0; }
+  .md table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  .md th, .md td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+  .md th { background: var(--panel2); }
+  .md li { margin: 3px 0; }
+  .md input[type=checkbox] { accent-color: var(--green); }
+
+  .upd { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px;
+         background: var(--panel); overflow: hidden; }
+  .upd summary { padding: 13px 18px; cursor: pointer; display: flex; gap: 12px; align-items: baseline;
+                 list-style: none; }
+  .upd summary::-webkit-details-marker { display: none; }
+  .upd summary:hover { background: var(--panel2); }
+  .upd .when { font-size: 12px; color: var(--dim); font-variant-numeric: tabular-nums;
+               white-space: nowrap; min-width: 88px; }
+  .upd .t { font-weight: 600; }
+  .upd .body { padding: 4px 22px 16px; border-top: 1px solid var(--border); }
+  .upd .fname { font-size: 11px; color: var(--dim); }
+
+  .chk { display: flex; gap: 10px; padding: 7px 10px; border-radius: 8px; align-items: flex-start; }
+  .chk:hover { background: var(--panel2); }
+  .chk input { margin-top: 4px; flex-shrink: 0; accent-color: var(--green); cursor: pointer; }
+  .chk.done .txt { color: var(--dim); text-decoration: line-through; }
+  .chk .txt p { margin: 0; }
+
+  .toolbar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .toolbar input[type=search] { flex: 1; min-width: 220px; background: var(--panel);
+        border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px;
+        color: var(--text); font: inherit; }
+  .toolbar select { background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+        padding: 8px 10px; color: var(--text); font: inherit; }
+
+  table.data { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  table.data th, table.data td { border-bottom: 1px solid var(--border); padding: 8px 10px;
+        text-align: left; }
+  table.data th { color: var(--dim); font-weight: 600; position: sticky; top: 0; background: var(--bg); }
+  table.data tr.row { cursor: pointer; }
+  table.data tr.row:hover { background: var(--panel2); }
+
+  .chip { display: inline-block; font-size: 11.5px; padding: 1px 9px; border-radius: 10px; }
+  .chip.candidate { background: #3a3112; color: var(--amber); }
+  .chip.active { background: #14331f; color: var(--green); }
+  .chip.archived { background: #331616; color: var(--red); }
+  .chip.contabilidade { background: #16243a; color: var(--accent); }
+  .chip.advocacia { background: #2b1a3a; color: var(--purple); }
+
+  .drawer { position: fixed; top: 0; right: 0; width: min(680px, 92vw); height: 100vh;
+        background: var(--panel); border-left: 1px solid var(--border); padding: 22px 26px;
+        overflow-y: auto; box-shadow: -12px 0 40px rgba(0,0,0,.5); z-index: 10; }
+  .drawer .close { float: right; background: var(--panel2); border: 1px solid var(--border);
+        color: var(--text); border-radius: 8px; padding: 4px 12px; cursor: pointer; font: inherit; }
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 9; }
+
+  .empty { padding: 30px; text-align: center; color: var(--dim); }
+  .err { background: #331616; color: var(--red); padding: 10px 16px; border-radius: 8px;
+         margin-bottom: 14px; }
+  .refresh { font-size: 12px; color: var(--dim); margin-top: 26px; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav id="nav"></nav>
+  <main id="main"></main>
+</div>
+<div id="drawer-root"></div>
+
+<script>
+const VIEWS = [
+  { id: 'overview',   label: 'Visão geral' },
+  { id: 'biblioteca', label: 'Biblioteca' },
+  { id: 'pendencias', label: 'Pendências' },
+  { id: 'decisoes',   label: 'Decisões ativas' },
+  { id: 'updates',    label: 'Updates' },
+  { id: 'wiki',       label: 'Wiki' },
+  { id: 'agents',     label: 'Agentes' },
+  { id: 'skills',     label: 'Skills' },
+  { id: 'scoreboard', label: 'Scoreboard' },
+  { id: 'changelog',  label: 'Changelog' },
+];
+const $ = (sel, el = document) => el.querySelector(sel);
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+const md = s => (window.marked ? marked.parse(s) : '<pre>' + esc(s) + '</pre>');
+const mdInline = s => (window.marked ? marked.parseInline(s) : esc(s));
+const api = async (path, opts) => {
+  const r = await fetch(path, opts);
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || r.status);
+  return j;
+};
+let badges = {};
+
+function nav(current) {
+  $('#nav').innerHTML = `
+    <h1>🧠 Cérebro</h1>
+    <p class="sub">lab/ + updates/ · ao vivo</p>` +
+    VIEWS.map(v => {
+      const b = badges[v.id];
+      return `<button class="${v.id === current ? 'active' : ''}" onclick="location.hash='${v.id}'">
+        <span>${v.label}</span>${b ? `<span class="badge ${b.warn ? 'warn' : ''}">${b.text}</span>` : ''}
+      </button>`;
+    }).join('');
+}
+
+function page(title, desc, body) {
+  $('#main').innerHTML = `<h2 class="page">${title}</h2><p class="pagedesc">${desc}</p>${body}
+    <p class="refresh">Os dados são lidos dos arquivos a cada carregamento — recarregue a página para ver mudanças feitas por outras sessões.</p>`;
+}
+
+function fmtWhen(file) {
+  const m = file.match(/^(\d{4})-(\d{2})-(\d{2})[_-](\d{2})(\d{2})/);
+  if (!m) return file;
+  return `${m[3]}/${m[2]} ${m[4]}:${m[5]}`;
+}
+
+// ---------- views ----------
+
+async function vOverview() {
+  const o = await api('/api/overview');
+  const st = o.agents.by_status, dm = o.agents.by_domain;
+  const inboxWarn = o.inbox.length > 0;
+  badges = {
+    pendencias: { text: o.pendencias.open, warn: o.pendencias.open > 0 },
+    updates: { text: o.updates_total },
+    agents: { text: o.agents.total },
+  };
+  nav('overview');
+  page('Visão geral', 'O estado do cérebro num relance. Clique num cartão para abrir a seção.', `
+    <div class="cards">
+      <div class="card" onclick="location.hash='pendencias'">
+        <div class="num" style="color:var(--amber)">${o.pendencias.open}</div>
+        <div class="lbl">pendências abertas</div>
+        <div class="extra">${o.pendencias.done} concluídas</div>
+      </div>
+      <div class="card" onclick="location.hash='agents'">
+        <div class="num">${o.agents.total}</div>
+        <div class="lbl">agentes no catálogo</div>
+        <div class="extra">${Object.entries(st).map(([k, v]) => `${v} ${k}`).join(' · ')}<br>
+          ${Object.entries(dm).map(([k, v]) => `${v} ${k}`).join(' · ')}</div>
+      </div>
+      <div class="card" onclick="location.hash='updates'">
+        <div class="num">${o.updates_total}</div>
+        <div class="lbl">updates entre sessões</div>
+      </div>
+      <div class="card" onclick="location.hash='scoreboard'">
+        <div class="num" style="color:${o.scoreboard_rows ? 'var(--green)' : 'var(--dim)'}">${o.scoreboard_rows}</div>
+        <div class="lbl">medições no scoreboard</div>
+        <div class="extra">${o.scoreboard_rows ? '' : 'o elo fraco: nada medido ainda'}</div>
+      </div>
+      <div class="card" onclick="location.hash='skills'">
+        <div class="num">${o.skills_total}</div>
+        <div class="lbl">skills curadas</div>
+        <div class="extra">${o.archive_total} arquivadas</div>
+      </div>
+      <div class="card">
+        <div class="num" style="color:${inboxWarn ? 'var(--amber)' : 'var(--green)'}">${o.inbox.length}</div>
+        <div class="lbl">itens no inbox</div>
+        <div class="extra">${inboxWarn ? esc(o.inbox.join(', ')) + ' — aguardando triagem' : 'inbox vazio — nada a triar ✓'}</div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Updates recentes</h3>
+      ${o.updates_recent.map(u => `<div style="display:flex;gap:14px;padding:5px 0">
+        <span class="upd when" style="color:var(--dim);font-size:12px;min-width:88px;font-variant-numeric:tabular-nums">${fmtWhen(u.file)}</span>
+        <a href="#updates">${esc(u.title)}</a></div>`).join('')}
+    </div>`);
+}
+
+async function vPendencias() {
+  const f = await api('/api/file?path=lab/knowledge/wiki/pendencias-globais.md');
+  const lines = f.content.split('\n');
+  let html = '', err = '';
+  const items = [];
+  lines.forEach((line, i) => {
+    const m = line.match(/^\s*- \[( |x)\] (.*)$/);
+    if (m) {
+      items.push(i);
+      html += `<div class="chk ${m[1] === 'x' ? 'done' : ''}">
+        <input type="checkbox" ${m[1] === 'x' ? 'checked' : ''} data-line="${i}">
+        <span class="txt">${mdInline(m[2])}</span></div>`;
+    } else if (/^\s+\S/.test(line) && items.length && !line.startsWith('#')) {
+      html += `<div class="chk" style="padding-top:0;margin-top:-6px;padding-left:34px">
+        <span class="txt" style="color:var(--dim);font-size:13px">${mdInline(line.trim())}</span></div>`;
+    } else if (line.startsWith('## ')) {
+      html += `<h2 style="font-size:16px;margin:22px 0 6px">${mdInline(line.slice(3))}</h2>`;
+    } else if (line.startsWith('> ')) {
+      html += `<p style="color:var(--dim);font-size:13px;margin:4px 0">${mdInline(line.slice(2))}</p>`;
+    }
+  });
+  page('Pendências globais', 'Página viva consolidada dos updates. Marcar aqui escreve direto em pendencias-globais.md (com data).',
+    `<div id="penderr"></div><div class="panel">${html}</div>`);
+  document.querySelectorAll('.chk input').forEach(cb => {
+    cb.addEventListener('change', async e => {
+      const line = +e.target.dataset.line;
+      try {
+        await api('/api/toggle', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ line, expect: lines[line] }) });
+        vPendencias();
+      } catch (ex) {
+        $('#penderr').innerHTML = `<div class="err">${esc(ex.message)}</div>`;
+        e.target.checked = !e.target.checked;
+      }
+    });
+  });
+}
+
+async function vDecisoes() {
+  const f = await api('/api/file?path=lab/knowledge/wiki/decisoes-ativas.md');
+  page('Decisões ativas', 'Decisões do Pedro que valem entre sessões — cada uma cita a fonte.',
+    `<div class="panel md">${md(f.content)}</div>`);
+}
+
+async function vUpdates() {
+  const list = await api('/api/updates');
+  page('Updates', `Canal entre as sessões paralelas de Claude Code — ${list.length} resumos, mais recente primeiro.`,
+    list.map((u, i) => `
+      <details class="upd" ${i === 0 ? 'open' : ''}>
+        <summary><span class="when">${fmtWhen(u.file)}</span><span class="t">${esc(u.title)}</span></summary>
+        <div class="body md">${md(u.content)}<p class="fname">${esc(u.file)}</p></div>
+      </details>`).join(''));
+}
+
+async function vWiki() {
+  const pages = await api('/api/wiki');
+  page('Wiki do cérebro', 'Síntese escrita pela IA — o humano não edita.',
+    pages.map((p, i) => `
+      <details class="upd" ${i === 0 ? 'open' : ''}>
+        <summary><span class="t">${esc(p.title)}</span><span class="fname" style="font-size:11px;color:var(--dim)">${esc(p.file)}</span></summary>
+        <div class="body md">${md(p.content)}</div>
+      </details>`).join(''));
+}
+
+async function vAgents() {
+  const { rows } = await api('/api/agents');
+  page('Agentes', `${rows.length} subagents Claude Code curados (ciclo de vida: candidate → active → archived). Clique para ler a definição.`, `
+    <div class="toolbar">
+      <input type="search" id="agfilter" placeholder="filtrar por nome…">
+      <select id="agdomain"><option value="">todos os domínios</option>
+        ${[...new Set(rows.map(r => r.domain))].map(d => `<option>${esc(d)}</option>`).join('')}</select>
+      <select id="agstatus"><option value="">todos os status</option>
+        ${[...new Set(rows.map(r => r.status))].map(s => `<option>${esc(s)}</option>`).join('')}</select>
+    </div>
+    <table class="data"><thead><tr><th>nome</th><th>domínio</th><th>status</th><th>modelo</th><th>origem</th></tr></thead>
+    <tbody id="agbody"></tbody></table>`);
+  const render = () => {
+    const q = $('#agfilter').value.toLowerCase(), dom = $('#agdomain').value, st = $('#agstatus').value;
+    $('#agbody').innerHTML = rows
+      .filter(r => (!q || r.name.includes(q)) && (!dom || r.domain === dom) && (!st || r.status === st))
+      .map(r => `<tr class="row" data-file="lab/${esc(r.file)}" data-name="${esc(r.name)}">
+        <td>${esc(r.name)}</td>
+        <td><span class="chip ${esc(r.domain)}">${esc(r.domain)}</span></td>
+        <td><span class="chip ${esc(r.status)}">${esc(r.status)}</span></td>
+        <td>${esc(r.model || '')}</td><td style="color:var(--dim)">${esc(r.source || '')}</td></tr>`).join('');
+    document.querySelectorAll('#agbody tr').forEach(tr =>
+      tr.addEventListener('click', () => openDrawer(tr.dataset.name, tr.dataset.file)));
+  };
+  ['agfilter', 'agdomain', 'agstatus'].forEach(id => $('#' + id).addEventListener('input', render));
+  render();
+}
+
+async function openDrawer(title, path) {
+  const root = $('#drawer-root');
+  root.innerHTML = `<div class="overlay" onclick="closeDrawer()"></div>
+    <div class="drawer"><button class="close" onclick="closeDrawer()">fechar ✕</button>
+    <div class="md" id="drawer-md">carregando…</div></div>`;
+  try {
+    const f = await api('/api/file?path=' + encodeURIComponent(path));
+    $('#drawer-md').innerHTML = `<p style="color:var(--dim);font-size:12px">${esc(path)}</p>` + md(f.content);
+  } catch (e) {
+    $('#drawer-md').innerHTML = `<div class="err">${esc(e.message)}</div>`;
+  }
+}
+function closeDrawer() { $('#drawer-root').innerHTML = ''; }
+
+async function vSkills() {
+  const skills = await api('/api/skills');
+  page('Skills', 'Procedimentos reutilizáveis curados — uma tela por skill.',
+    skills.length ? skills.map(s => `
+      <details class="upd" open>
+        <summary><span class="t">${esc(s.title)}</span></summary>
+        <div class="body md">${md(s.content)}</div>
+      </details>`).join('') : '<div class="empty">Nenhuma skill curada ainda.</div>');
+}
+
+async function vScoreboard() {
+  const { header, rows } = await api('/api/scoreboard');
+  page('Scoreboard', 'O livro-razão de desempenho: rodadas noturnas (val_bpb) e uso real de agentes/skills nos projetos.',
+    rows.length
+      ? `<table class="data"><thead><tr>${header.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
+         <tbody>${rows.map(r => `<tr>${header.map(h => `<td>${esc(r[h] || '')}</td>`).join('')}</tr>`).join('')}</tbody></table>`
+      : `<div class="empty"><p style="font-size:34px;margin:0">📭</p>
+         <p><b>Nenhuma medição registrada ainda.</b></p>
+         <p>É exatamente o elo fraco apontado na wiki (padrão central): sem métrica não há seleção.<br>
+         O scoreboard enche quando a primeira noite de treino rodar no desktop-wsl<br>
+         ou quando uma sessão relatar uso real de um agente do catálogo num update.</p></div>`);
+}
+
+async function vChangelog() {
+  const f = await api('/api/changelog');
+  page('Changelog', 'A memória do curador — o que foi processado, quando, e o que mudou.',
+    `<div class="panel md">${md(f.content)}</div>`);
+}
+
+async function vBiblioteca() {
+  const b = await api('/api/biblioteca');
+  const mirror = b.mirrors.length
+    ? `<b>${b.mirrors.length} projeto(s)</b> já espelharam a engenharia: ${b.mirrors.map(m => esc(m.slug)).join(', ')}.`
+    : `<b>Prateleiras vazias</b> — nenhum projeto espelhou seu resumo de engenharia ainda. Para encher: cole o prompt da skill <code>sync-projeto-cerebro</code> na aba de cada projeto; ele lê o código real e roda o <code>lab-sync</code>.`;
+  const docs = [
+    { t: '📍 Onde mora a verdade de cada sistema', c: b.fontes, open: true },
+    { t: '🗣️ Vocabulário do Pedro — como você fala', c: b.vocab, open: true },
+    { t: '🗂️ Registro de projetos', c: b.index, open: false },
+  ].filter(d => d.c);
+  page('Biblioteca', 'O catálogo do cérebro: onde está a verdade verificada de cada sistema, datada, e como o Pedro fala. Primeiro a biblioteca — depois qualquer análise se apoia nela.',
+    `<div class="panel"><h3>Estado das prateleiras</h3><p>${mirror}</p></div>` +
+    (b.mirrors.length ? b.mirrors.map(m => `
+      <details class="upd"><summary><span class="t">🧩 ${esc(m.slug)}</span>
+        <span class="fname" style="font-size:11px;color:var(--dim)">${esc(m.header.replace(/<!--|-->/g, '').trim())}</span></summary>
+        <div class="body md">${md(m.content)}</div></details>`).join('') : '') +
+    docs.map(d => `
+      <details class="upd" ${d.open ? 'open' : ''}>
+        <summary><span class="t">${esc(d.t)}</span></summary>
+        <div class="body md">${md(d.c)}</div>
+      </details>`).join(''));
+}
+
+// ---------- router ----------
+
+const ROUTES = { overview: vOverview, biblioteca: vBiblioteca, pendencias: vPendencias,
+  decisoes: vDecisoes, updates: vUpdates, wiki: vWiki, agents: vAgents, skills: vSkills,
+  scoreboard: vScoreboard, changelog: vChangelog };
+
+async function route() {
+  closeDrawer();
+  const id = location.hash.replace('#', '') || 'overview';
+  nav(id);
+  $('#main').innerHTML = '<p style="color:var(--dim)">carregando…</p>';
+  try {
+    await (ROUTES[id] || vOverview)();
+    nav(id);
+  } catch (e) {
+    $('#main').innerHTML = `<div class="err">Erro: ${esc(e.message)}</div>`;
+  }
+}
+window.addEventListener('hashchange', route);
+// carrega contadores da sidebar uma vez, depois roteia
+api('/api/overview').then(o => {
+  badges = {
+    pendencias: { text: o.pendencias.open, warn: o.pendencias.open > 0 },
+    updates: { text: o.updates_total },
+    agents: { text: o.agents.total },
+  };
+}).finally(route);
+</script>
+</body>
+</html>

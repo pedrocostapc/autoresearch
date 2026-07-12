@@ -1,0 +1,4 @@
+id,nome,cnpj,contato,email,telefone,categoria,prazo_pagamento_dias,prazo_entrega_dias,observacoes,status
+F001,TecidoCo,00.000.000/0001-00,Carlos,carlos@tecidoco.com.br,1133338888,tecidos,30,7,Fornecedor principal de algodao,ativo
+F002,EstamparArte,11.111.111/0001-11,Patricia,patricia@estamparte.com.br,1144449999,estampa,15,5,Estampas digitais,ativo
+F003,Embalagens BR,22.222.222/0001-22,Roberto,roberto@embalagensbr.com.br,1155556666,embalagem,30,3,Caixas e sacolas,ativo

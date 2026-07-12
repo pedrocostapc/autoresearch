@@ -1,0 +1,7 @@
+id,projeto_id,etapa,ordem,responsavel,data_inicio_planejada,data_fim_planejada,data_fim_real,status
+ET001,PR001,Pesquisa de tema,1,Pedro,2026-04-01,2026-04-08,,nao_iniciada
+ET002,PR001,Arte dos 5 SKUs,2,Pedro,2026-04-08,2026-04-22,,nao_iniciada
+ET003,PR001,Producao,3,Marcelo,2026-04-22,2026-05-30,,nao_iniciada
+ET004,PR001,Lancamento,4,Maria,2026-06-01,2026-06-15,,nao_iniciada
+ET005,PR002,Foto camisetas P/M/G,1,Pedro,2026-01-20,2026-02-05,2026-02-04,concluida
+ET006,PR002,Edicao + upload,2,Pedro,2026-02-05,2026-02-28,,em_andamento

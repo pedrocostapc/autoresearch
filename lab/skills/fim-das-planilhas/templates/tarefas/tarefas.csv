@@ -1,0 +1,4 @@
+id,titulo,descricao,responsavel,prioridade,prazo,status,projeto,data_criacao,data_conclusao
+T0001,Refazer foto Sao Paulo P,Foto atual com fundo ruim - refazer em estudio,Pedro,alta,2026-02-05,em_andamento,Site,2026-01-28,
+T0002,Cobrar Loja Estilo SP,Pedido AR0001 venceu hoje - ligar,Marcelo,urgente,2026-02-15,pendente,,2026-02-15,
+T0003,Lancamento Camp Junina,Definir 5 SKUs juninos,Marcelo,media,2026-04-15,pendente,Junina,2026-02-01,

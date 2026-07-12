@@ -1,0 +1,4 @@
+data,numero_compra,fornecedor_id,descricao,quantidade,valor_unitario,valor_total,prazo_pagamento,status_pagamento,status_entrega,data_entrega_real
+2026-01-08,P0001,F001,Tecido algodao branco lote 12,100,12.50,1250.00,2026-02-07,pago,entregue,2026-01-15
+2026-01-10,P0002,F002,Estampa digital 5 modelos,50,8.00,400.00,2026-01-25,pago,entregue,2026-01-15
+2026-01-22,P0003,F003,Caixas papelao G x100,100,2.50,250.00,2026-02-21,em_aberto,em_transito,

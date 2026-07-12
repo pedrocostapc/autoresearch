@@ -1,0 +1,4 @@
+sku,nome,categoria,unidade,saldo_atual,estoque_minimo,custo_unitario,preco_venda,fornecedor_principal,status
+REC-G,Camiseta Recife G,vestuario,un,19,5,18.00,49.90,F001,ativo
+FLO-M,Camiseta Floripa M,vestuario,un,3,10,18.00,49.90,F001,ativo
+SAL-G,Camiseta Salvador G,vestuario,un,4,10,18.00,49.90,F001,ativo

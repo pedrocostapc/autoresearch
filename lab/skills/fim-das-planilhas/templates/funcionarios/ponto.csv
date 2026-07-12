@@ -1,0 +1,4 @@
+data,funcionario_id,entrada,saida_almoco,volta_almoco,saida,horas_trabalhadas,observacao
+2026-01-15,E001,08:00,12:00,13:00,17:00,8,
+2026-01-15,E002,09:00,13:00,14:00,18:00,8,
+2026-01-15,E003,10:00,12:30,13:30,19:30,8,Home office

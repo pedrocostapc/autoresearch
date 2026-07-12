@@ -1,0 +1,4 @@
+data,cliente_id,tipo,canal,resumo,proximo_passo,data_proximo_passo,responsavel
+2026-01-12,C001,primeiro_contato,instagram_dm,Pediu informacao sobre tamanho da Recife G,Mandar tabela de medidas,2026-01-13,Maria
+2026-01-13,C001,venda,whatsapp,Fechou compra Recife G x3,Acompanhar entrega,2026-01-20,Maria
+2026-01-20,C048,reuniao,zoom,Apresentou linha completa para revenda,Mandar proposta atacado,2026-01-21,Marcelo

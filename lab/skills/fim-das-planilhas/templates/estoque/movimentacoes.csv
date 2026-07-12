@@ -1,0 +1,4 @@
+data,sku,tipo,quantidade,saldo_apos,observacao,referencia
+2026-01-10,REC-G,entrada,50,50,Compra fornecedor F001 lote 12,P0001
+2026-01-15,REC-G,saida,3,47,Venda V0001 - Carla Mendes,V0001
+2026-01-22,REC-G,saida,28,19,Vendas do mes (consolidado),

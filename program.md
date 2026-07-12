@@ -18,6 +18,27 @@ To set up a new experiment, work with the user to:
 
 Once you get confirmation, kick off the experimentation.
 
+## The lab (agents, skills, knowledge)
+
+This repo has a `lab/` folder — a self-optimizing research org. Read
+`lab/CLAUDE.md` for the full schema. Your obligations toward it:
+
+1. **Before the loop**: run triage on `lab/inbox/` (classify and file anything
+   the human dumped there). Then load every `candidate` and `active` skill from
+   `lab/skills/` and read `lab/knowledge/wiki/index.md` if it exists — do not
+   re-try ideas the wiki marks as failed unless you have a new reason.
+2. **During the loop**: when an experiment is inspired by a skill or wiki
+   entry, tag it in the results.tsv description, e.g. `[skill:lr-sweep] ...`.
+3. **After the loop** (or every ~20 experiments): write a short run summary to
+   `lab/knowledge/raw/run-<tag>.md` (what was tried, what was kept, surprises),
+   append usage rows to `lab/scoreboard.tsv`, and update the wiki with any new
+   finding worth keeping (cite commit hash + val_bpb).
+4. **Update for the human**: also drop a brief, readable note in
+   `updates/<YYYY-MM-DD>-<HHMM>-<slug>.md` (use the current local date/time):
+   what happened this run, best val_bpb vs the previous night, and anything
+   that needs a human decision. This is the morning briefing — write it for a
+   person waking up, not for another agent.
+
 ## Experimentation
 
 Each experiment runs on a single GPU. The training script runs for a **fixed time budget of 5 minutes** (wall clock training time, excluding startup/compilation). You launch it simply as: `uv run train.py`.

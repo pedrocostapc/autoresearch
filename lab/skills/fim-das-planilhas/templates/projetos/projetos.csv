@@ -1,0 +1,4 @@
+id,nome,cliente,responsavel,data_inicio,data_fim_planejada,data_fim_real,status,valor_contrato,observacoes
+PR001,Campanha Junina,interno,Marcelo,2026-04-01,2026-06-15,,em_andamento,8000.00,5 SKUs juninos
+PR002,Troca foto site,interno,Pedro,2026-01-20,2026-02-28,,em_andamento,1500.00,Refoto dos 30 SKUs
+PR003,Pedido Loja Estilo SP,Loja Estilo SP,Marcelo,2026-01-22,2026-02-10,2026-02-08,concluido,2100.00,Pedido especial revenda

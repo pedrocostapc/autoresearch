@@ -1,0 +1,4 @@
+id,nome,email,telefone,empresa,status,origem,data_cadastro,cidade,estado,observacoes
+C001,Carla Mendes,carla@email.com,11988881234,,ativo,instagram,2026-01-12,Sao Paulo,SP,Cliente recorrente
+C002,Joao Silva,joao@xpto.com.br,11999990000,XPTO Ltda,ativo,indicacao,2026-01-10,Sao Paulo,SP,Indicado pela Carla
+C048,Loja Estilo SP,contato@lojaestilo.com.br,1133334444,Loja Estilo SP,ativo,linkedin,2026-01-20,Sao Paulo,SP,Atacado - 30% desconto

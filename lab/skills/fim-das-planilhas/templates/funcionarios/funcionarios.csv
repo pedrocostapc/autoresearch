@@ -1,0 +1,4 @@
+id,nome,cargo,salario_base,data_admissao,carga_horaria_diaria,vinculo,pix,status
+E001,Maria Silva,Vendedora,2500.00,2024-03-01,8,clt,maria@email.com,ativo
+E002,Joana Souza,Vendedora,2500.00,2024-08-15,8,clt,joana@email.com,ativo
+E003,Pedro Lima,Designer,3800.00,2025-02-01,8,pj,pedro@email.com,ativo

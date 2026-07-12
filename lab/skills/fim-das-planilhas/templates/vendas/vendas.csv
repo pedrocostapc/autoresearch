@@ -1,0 +1,4 @@
+data,numero_venda,cliente,vendedor,sku,quantidade,valor_unitario,valor_total,forma_pagamento,status,canal,observacao
+2026-01-15,V0001,Carla Mendes,Maria,REC-G,3,49.90,149.70,pix,pago,site,
+2026-01-15,V0002,Joao Silva,Maria,FLO-M,1,49.90,49.90,cartao_credito,pago,site,
+2026-01-22,V0042,Loja Estilo SP,Marcelo,REC-G,30,42.00,1260.00,boleto,em_aberto,atacado,Pedido faturado 30 dias

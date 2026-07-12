@@ -348,3 +348,11 @@ como suspeito só >30min (docling gigante legítimo leva 12-18min). Core acabou 
 checar >30min: 0 presos.
 (4) NOVO: peneira text-first+pixels no ar (worker 793f34e0) — fraca rebaixa scan
 (85/88) e a 3060 come na hora (ordem desc). Vazão ~3.500/h. Calibragem ordem 6 segue valendo.
+
+**SESSÃO CONCIERGE-PEDRO (financaspedro) → CHECKPOINT (12/07 18:30):** Estado gravado em
+`updates/2026-07-12_1830_concierge-checkpoint.md`. NO AR: app financaspedro (Vercel) com aba
+nova "Minhas" (Despesas PF) lendo do banco local `~/Dev/concierge/concierge.db` (SQLite, fonte
+da verdade); Responder com 5 e-mails+3 versões; motor de cliques 24/7 (launchd
+com.risen.concierge-arm). Cadência do monitor mudou p/ 5 slots fixos (07/10/13/16/19h); domingo
+12/07 pausado, resume seg 07h. Tudo commitado/pushado (financaspedro + concierge). Não mexo em
+supersec — só ignoro os notifics de CI (github-supersec-ci) como ruído no meu scan.

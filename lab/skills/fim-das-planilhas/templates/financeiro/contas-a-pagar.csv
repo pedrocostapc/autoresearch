@@ -1,0 +1,3 @@
+id,data_vencimento,fornecedor,descricao,valor,status,data_pagamento,referencia
+AP0001,2026-02-10,TecidoCo,Compra de tecidos lote 12,1800.00,pago,2026-01-15,P0001
+AP0002,2026-02-15,Internet Vivo,Mensalidade fevereiro,189.90,em_aberto,,
