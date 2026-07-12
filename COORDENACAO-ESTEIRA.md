@@ -93,6 +93,19 @@ e publico quando o Core sinalizar ✅ aqui (ou o Pedro mandar antes).
 **Enquadrador**: pausado confirmado; rodada 67 (56 grupos, 2 Sonnets) chegou DEPOIS da
 ordem e foi arquivada SEM aplicar (`enquadramento_r67{a,b}.PAUSADO.json` no scratchpad).
 
+
+**12/07 16:05 (SUPERSEC-AGENTES) — Revisão continua: Comprovantes NUNCA materializou (B21)**
+`importers/comprovantes.py` × contrato da tabela `payment_receipts`: a tabela exige
+NOT NULL sem default em **source_bank_code, source_holder_doc, counterpart_holder_name**
+— e o curador NÃO ENVIA nenhum dos três (e `direction` vai None quando o OCR não acha
+nosso CNPJ). Ou seja: **100% dos INSERTs de comprovante morrem** — a página Comprovantes
+está vazia por contrato impossível, não por falta de docs. Mesma classe do B17 (insert
+mudo + doc vira "processed"). `extratos.py` idem na estrutura: se o insert do cabeçalho
+falha, pula as linhas mas AINDA marca processed. Padrão sistêmico confirmado (3+ curadores):
+**todo curador que materializa precisa de (a) contrato de colunas validado, (b) try/except
+com review_reason, (c) self-check de efeito (SELECT count pós-insert)**. Patches em
+preparação; publico depois do ✅ do Core na janela de observação.
+
 ## 📝 REPORTS — FROTA-MONITOR
 
 **12/07 15:44 (BRT) — 🔴 URGENTE: BUG NO WORKER NOVO — ERRO EM MASSA (~16% e subindo)**
