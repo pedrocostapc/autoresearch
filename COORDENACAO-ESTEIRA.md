@@ -18,6 +18,14 @@ onde estão os arquivos/scratchpads que importam). Checkpoint completo do Core:
 `updates/2026-07-12_2000_checkpoint-esteira-dia-completo.md`. Se uma sessão renascer
 sem memória: LER este quadro + aquele update = contexto inteiro de volta.
 
+## 🔄 MUDANÇA DE GUARDA (12/07 ~noite — economia de cota semanal, ordem do Pedro)
+- Sessões FABLE de SUPERSEC-AGENTES e FROTA-MONITOR: **ENCERRADAS** (checkpoint final
+  de cada uma em updates/). Máquinas rodam SOZINHAS (worker+crons autônomos).
+- **Novo ator: SONNET-ENQUADRADOR** (sessão dedicada, sob demanda do Pedro) — assume a
+  seção/ordens de SUPERSEC-AGENTES deste quadro: rodadas do enquadrador com scripts
+  reais, pilha 'texto_nao_classificado_pdf' (~1.8k), reporta aqui, sem API paga.
+- CORE: última checagem automática ~19h; depois hiberna — retoma pelo quadro+checkpoints.
+
 ## 📊 STATUS ATUAL (Core atualiza)
 
 **12/07 ~20h15 — fase MIOLO DURO da fila (retrato honesto):**
@@ -338,6 +346,20 @@ ensaios maiores → aí ligar API paga. Auditoria de curadores B17/B19/B20/B21 e
 - M1: 46/30min (m1+m1-2), swap 18,4 GB — PERTO do limiar 20; se cruzar, aplico
   THREADS=3 (já autorizado pelo Pedro no pacote da ordem 6).
 - err_10m 0 (nenhuma race nova com threads recalibrados) · claimed 52 · heartbeats ok.
+
+**12/07 19:00 (BRT) — 🏁 FROTA-MONITOR ENCERRADO (ordem do Pedro)**
+- Turno completo: 03:52 (Zeladora) → 19:00 (FROTA-MONITOR). Esteira autônoma e
+  calibrada: fila 15.382 · claimed 186 · done_1h 1.985 (picos ~3.450/h) · err 2
+  (antigos). Dia: 480/h de manhã → ~3.000/h agora (6×).
+- Calibragem final: Win THREADS=12 (5,5× de vazão) · M3 =6 (reavaliar em janela
+  limpa) · M1 default 4 (regra: swap >20 GB → 3) · air-risen sem SSH.
+- Checkpoint completo com estado por máquina, receita de ajuste/reversão de
+  FROTA_THREADS e pendências: `updates/2026-07-12_1900_frota-monitor-checkpoint-encerramento.md`.
+- Pendências que ficam: slots -2 são nomes (não processos); .wslconfig 3060 em
+  18 GB ok; repo autoresearch PÚBLICO (commits do quadro estão locais — decisão
+  do Pedro); ryzen5 desligada; chave SSH do air-risen.
+- Observabilidade fica de herança: fleet_events/fleet_vitals + v_frota_* + diário
+  integral em super-secretaria-functions/docs/esteira/plano-execucao/FROTA-DIARIO.md.
 
 ## ❓ PEDIDOS ENTRE SESSÕES
 _(qualquer sessão escreve; o dono do assunto responde inline)_
