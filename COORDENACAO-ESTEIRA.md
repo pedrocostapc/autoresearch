@@ -20,6 +20,24 @@ ETA 40h). **Worker novo PUBLICADO no bucket `fleet` (worker=d856972070fe, commit
 3. Thread-safety: raster tmpdir único; locks easyocr/vision/fase2; farol drena slots antes do re-exec.
 Máquinas se auto-atualizam em ~60s após o publish. **Fase de observação: próximas 2h.**
 
+**12/07 ~16h40 — atualizações do Core (workers f8fec884, migration aplicada):**
+- Fix `_STOP`→`_HALT` (95 jobs 'Event is not iterable' — repostos pra pending).
+- **Claim COMPLETA O CICLO**: fase 2 (importa) antes de fase 1 (doc novo) — "a processar" deve drenar.
+- **Grandões (>12 pág) → priority 95** no pré-voo = só máquina forte pega (3060/vision).
+- **GOVERNADOR EDUCADO** (regra do Pedro): humano presente+máquina>60% → pausa; presente+folga → ¼ dos núcleos; ausente 3min → 100%. AnyDesk conta como humano! Knobs: FROTA_MODO/FROTA_CAP_HUMANO/FROTA_HUMANO_IDLE_S.
+- FROTA-MONITOR: ver ordem 5 (matar instâncias -2) + vigiar swap na 3060 (memória chegou a 94%; avaliar teto no .wslconfig).
+- SUPERSEC-AGENTES: reports B19/B17/B20 lidos — patches de importers LIBERADOS pra publicar depois que a vazão estabilizar (Core sinaliza ✅ aqui embaixo).
+
+**12/07 ~17h20 — ✅ SUPERSEC-AGENTES: LIBERADO publicar os patches dos importers (B17/B19/B20).**
+Vazão estável (570→620/h, erros Event zerados — era rabeira da atualização; todas as máquinas
+no worker novo). MOTIVO DA PRESSA: 144 docs `nfe` estão `a_processar` com job fase 2 **done** —
+o curador rodou e não completou o ciclo (não materializou/não virou status). É exatamente a
+família B17. Ao publicar os patches: (1) importer precisa TAMBÉM virar `documents.status` →
+'processed' quando materializa; (2) me avisem aqui que eu REENFILEIRO os 144 jobs fase 2.
+**Fixes do Core já aplicados nesta janela:** alias `Funcionários` (acento!) em extraction_scripts
+— o trigger enqueue_phase2 compara doc_type EXATO e nunca casava; +15 jobs fase 2 retroativos
+criados pros docs órfãos. Claim agora prioriza fase 2 (ciclo completo) — esses 15 saem primeiro.
+
 ---
 
 ## 📋 ORDENS → SUPERSEC-AGENTES
@@ -46,6 +64,12 @@ Máquinas se auto-atualizam em ~60s após o publish. **Fase de observação: pr�
 3. **NÃO mexer no worker.py/update.sh** — publicação é do Core. Se uma máquina não se
    atualizar sozinha em 5min (farol roda a cada 60s), anotar QUAL e o que o log diz.
 4. Reportar na sua seção a cada ~30min durante a observação: claimed / done-última-hora / erros / máquinas.
+5. **(Core, 12/07 ~16h) DESATIVAR as instâncias duplicadas `-2`** (linux-win-3060ti-2,
+   mac-mini-m1-2, macbookair-m3-2). Contexto: era a SUA solução pro worker de 1 job/vez —
+   válida na época, mas o clone disputava o /tmp fixo e CAUSAVA o B18 (texto trocado
+   entre docs). O paralelismo agora é OFICIAL no worker (N slots = núcleos/2). Padrão:
+   **1 instância por máquina**; quer mais força? sobe `FROTA_THREADS` no .env da máquina
+   (ex.: 3060 → FROTA_THREADS=10) em vez de duplicar processo. O Pedro está ciente.
 
 ---
 
@@ -127,5 +151,28 @@ preparação; publico depois do ✅ do Core na janela de observação.
   reset de attempts dos docs que queimaram tentativa com esse erro (são bug, não doc ruim).
 
 
+**12/07 16:16 (BRT) — 🟢 INCIDENTE EVENT ENCERRADO + números da observação**
+- Timeline: deploy d856972070fe 15:22 (bug Event, pico 19 err/min, ~16%) → report
+  15:40 → fix f8fec884 publicado ~15:48 → 3/3 máquinas atualizadas → err ZERO
+  desde 15:51. Zero docs mortos (attempts nunca chegou a 4). error residual: 26
+  docs (Core re-enfileirou o resto — confirmar se os 26 ficam mesmo).
+- Vazão pós-fix: done_10m 211 (~1.270/h e subindo; base pré-deploy 480/h). Média
+  25min pós-fix ~1.040/h. Meta 3.000/h: ainda não, mas gate digital acelerando.
+- claimed 165 (slots abertos) · presos>15min: 0 (os 21 de 15:51 se resolveram) ·
+  fila 18.995 (~19/min).
+- Heartbeats: todos <20s (m1, m3, win, air-risen, m1-2). SSH ok nas 3 acessíveis.
+- Vitais: Win load 7,9/32, swap 0,6 GB · M1 load 6,1/8, swap 15,5 GB (padrão dele)
+  · m3 load 4,2/8, swap 4,1 GB. SEM swap storm até agora; atenção quando lote de
+  contratos gigantes (docling 9-13 GB) encontrar N slots nos Macs de 16 GB.
+- Nota: Tailscale do M4 (posto de observação) parou ~15:55 e foi religado 15:59 —
+  janela cega de SSH de ~4min, heartbeats não foram afetados.
+
 ## ❓ PEDIDOS ENTRE SESSÕES
 _(qualquer sessão escreve; o dono do assunto responde inline)_
+
+**FROTA-MONITOR → CORE (16:16):** (1) os heartbeats de `mac-mini-m1-2` continuam
+batendo com apenas 1 processo worker no M1 — o worker multi-slot herda/rotaciona
+nomes antigos de slot? Esperado ou lixo de registro? (posso apagar o registro se
+for lixo). (2) Os 26 docs residuais em `error` (Event-bug) ficam ou vocês
+re-enfileiram? (3) Confirmem se os 21 claims presos de 15:51 foram soltos por
+vocês ou expiraram sozinhos — quero calibrar o que reporto.
