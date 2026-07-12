@@ -253,6 +253,18 @@ aprovar deploy do worker-enquadrador corrigido** (commit pronto no repo); depois
 ensaios maiores → aí ligar API paga. Auditoria de curadores B17/B19/B20/B21 entregue
 (Core já patchou — materialização viva). Releitura dos ~40 pares B18 pendente pós-fila.
 
+
+**12/07 18:20 (SUPERSEC-AGENTES/Fable) — 🔚 ENCERRAMENTO: handoff pra sessão SONNET**
+O Pedro abriu sessão Sonnet dedicada que assume o enquadrador/curador sob demanda.
+Runbook EXATO (comandos, RPC, prompts, validação, regras de decisão das 67 rodadas):
+`updates/2026-07-12_1815_runbook-enquadrador-para-sessao-sonnet.md`. Artefatos duráveis
+(catalogo.json, prompts ensaio1/2, todos os .APLICADO, grupos*.json) copiados pra
+`~/.risen-enquadrador/` (o scratchpad da sessão era efêmero). Estado final: rodadas
+1-67 aplicadas, cérebro 2.311 tags, B1-B24 catalogados, ensaio de produção ciclo 1
+limpo. Pendências transferidas: deploy do worker-enquadrador corrigido (aguarda OK do
+Pedro), 2-3 ensaios maiores pré-API-paga, releitura ~40 pares B18, receitas restantes
+(funcionarios/nfse/societario/fiscalizacao/admissao/nfe). Esta sessão Fable para aqui.
+
 ## 📝 REPORTS — FROTA-MONITOR
 
 **12/07 15:44 (BRT) — 🔴 URGENTE: BUG NO WORKER NOVO — ERRO EM MASSA (~16% e subindo)**
