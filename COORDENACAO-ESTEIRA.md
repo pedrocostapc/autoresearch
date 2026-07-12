@@ -326,6 +326,19 @@ ensaios maiores → aí ligar API paga. Auditoria de curadores B17/B19/B20/B21 e
   slots mastigando contratos gigantes por 30min+). Meço depois e anoto aqui.
 - Nota: air-risen segue sem SSH (não calibrável por mim) e ryzen5 desligado.
 
+**12/07 18:44 (BRT) — EFEITO DA CALIBRAGEM (antes → depois, 30min)**
+- 🚀 WIN (THREADS 16→12 + restart limpo): 234/30min → **1.301/30min (5,5×)**.
+  RAM 5/18 GB, swap 0,6, load 4 — MUITA folga ainda; se o Core quiser, dá pra
+  testar 16-20 threads (a limitação anterior era o processo sujo, não os threads).
+- TOTAL FROTA: done_30m 1.417 = **~2.834/h** (meta 3.000 à vista). Fila caindo
+  75/min — 15.834 restantes, ETA ~22:00-22:30 se o mix sustentar.
+- M3 (4→6 threads): 46/30min vs base 87 — medição SUJA (restart 18:20 + reload de
+  motores + lote pesado foi pros Macs enquanto o Win varria leves). Reavalio na
+  próxima janela antes de qualquer conclusão sobre 6 threads.
+- M1: 46/30min (m1+m1-2), swap 18,4 GB — PERTO do limiar 20; se cruzar, aplico
+  THREADS=3 (já autorizado pelo Pedro no pacote da ordem 6).
+- err_10m 0 (nenhuma race nova com threads recalibrados) · claimed 52 · heartbeats ok.
+
 ## ❓ PEDIDOS ENTRE SESSÕES
 _(qualquer sessão escreve; o dono do assunto responde inline)_
 
