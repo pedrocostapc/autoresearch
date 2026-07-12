@@ -13,6 +13,22 @@
 
 ## 📊 STATUS ATUAL (Core atualiza)
 
+**12/07 ~18h40 — CORE ASSUMIU E PUBLICOU os patches dos importers (ordem direta do Pedro:
+"você tem liberdade para fazer os patches"). SUPERSEC-AGENTES: standdown nos 3 arquivos
+abaixo (não retrabalhar — B17/B19/B20/B21 e régua JÁ CORRIGIDOS, commit cf566e5); seu foco
+segue o item 2 das ordens (ensaios com Sonnet do enquadrador).**
+- `nfe.py`: ramo "não fechou" agora seta needs_review (era o buraco dos 144 presos em
+  a_processar); fonte XML dispensa DV de chave (XML é gabarito).
+- `contas_a_pagar.py`: B19 (venc re-ancorado na data do doc — adeus 2042/2047), B17
+  (fallback de nome p/ padrão sem " - " + self-check do ledger → 'cap_ledger_falhou'),
+  B20 (nome com R$ rejeitado), régua NÚCLEO (valor+venc+barcode/pix) no lugar do 0.98.
+- `comprovantes.py`: B21 (extrai favorecido+banco; self-check do INSERT →
+  'comprovante_materializacao_falhou').
+- Migration `20260712210000`: NOT NULLs de enriquecimento viraram nullable
+  (payment_receipts/ledger) — essência (tipo/valor/data) segue obrigatória.
+- **159 jobs fase 2 reenfileirados** (144 nfe + CaP/comprovantes presos + 5 needs_review
+  de régua velha) — furam a fila. Resultado em minutos; Core mede e reporta.
+
 **12/07 ~15h30 (BRT)** — Incidente dos 20k: fila estava a ~480/h (45s/doc × 1 job/máquina,
 ETA 40h). **Worker novo PUBLICADO no bucket `fleet` (worker=d856972070fe, commit d97072e):**
 1. **N slots paralelos** por máquina (default núcleos/2; env `FROTA_THREADS` manda).
@@ -216,6 +232,20 @@ estatística, (c) então ligar a chave no super admin.
   contratos gigantes (docling 9-13 GB) encontrar N slots nos Macs de 16 GB.
 - Nota: Tailscale do M4 (posto de observação) parou ~15:55 e foi religado 15:59 —
   janela cega de SSH de ~4min, heartbeats não foram afetados.
+
+**12/07 16:46 (BRT) — report 30min (observação ativa)**
+- err_10m: 0 (zero desde 15:51 ✓) · done_10m 188 (~1.130/h) · done_1h 1.040
+  (hora ainda suja do incidente; hora limpa fecha ~16:50).
+- claimed 68 · fila 18.880 · heartbeats todos <30s.
+- ⚠️ CLAIMS PRESOS — RESSALVA NA RÉGUA: >15min = 21, mas >30MIN = 15. A régua
+  de 15min NÃO distingue docling gigante legítimo (contratos registrados levam
+  12-18min de trabalho real). Os 15 acima de 30min é que são candidatos reais a
+  slot morto (provável sobra dos re-execs 15:22/15:48) — sugiro o Core soltar
+  esses e mudar a régua operacional pra 30min OU cruzar com heartbeat da máquina.
+- Vitais: Win load 1,4/32 swap 0,6 GB (OCIOSO — sobrou fila leve pro Win? gate
+  digital deixando ele sem trabalho pesado?); M1 6,1/8 swap 6,9 GB; m3 3,1/8
+  swap 2,2 GB. Sem swap storm. Multi-slot se comportando nos Macs até agora.
+- Pedidos de 16:16 seguem sem resposta (fantasma m1-2 / 26 errors / claims).
 
 ## ❓ PEDIDOS ENTRE SESSÕES
 _(qualquer sessão escreve; o dono do assunto responde inline)_
