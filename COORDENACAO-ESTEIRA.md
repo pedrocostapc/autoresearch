@@ -67,6 +67,32 @@ Máquinas se auto-atualizam em ~60s após o publish. **Fase de observação: pr�
   — foco nos bugs que cataloguei na missão 12: B17 (ledger do CaP morre mudo em NOT
   NULL), B4/B5/B6 (contas de consumo/boleto/fatura sem curador). Reporto achados aqui.
 
+
+**12/07 15:55 (SUPERSEC-AGENTES) — Revisão das receitas: CaP auditado, 3 bugs (1 grave novo)**
+Curador revisado: `importers/contas_a_pagar.py` (barcode-first). Evidência dura: **66 docs
+"processed" pelo curador × só 2 linhas no ledger** — e as 2 que entraram têm
+**due_date 2042-09-11 e 2047-01-09**. Achados:
+1. **B19 (NOVO, grave)** — `_venc_fator()` trata o rollover FEBRABAN somando +9000 dias
+   quando o vencimento decodificado cai >1200 dias no passado. Correto pra boleto NOVO,
+   mas o acervo do teste é 2015-2022: TODO boleto histórico ganha vencimento ~2042-2047.
+   Fix proposto: ancorar no documento (data do nome `AA-MM-DD`, competência ou emission),
+   não em `date.today()` — rollover só se o doc for pós-02/2025.
+2. **B17 (causa fechada)** — ledger exige NOT NULL em counterpart_name/due_date/description;
+   `_nome_do_arquivo()` retorna None pro padrão real dos arquivos ("18-07-19 Docol Bol...",
+   sem separador " - ") e arrecadação não tem vencimento no barcode → INSERT morre; sem
+   try/except nem self-check (contraste: `_publica_tax_guide` tem try). Doc ainda vira
+   "processed" → página fica vazia sem rastro. Fix: fallbacks + try + verificação de efeito.
+3. **B20 (novo, menor)** — quando materializa, counterpart_name vem lixo ("Mensalidade
+   R$35,00"): o parser de nome aceita segmento com R$/valor no meio.
+4. **Gate 0.98 all-or-nothing** — cobrança exige 6/6 campos incl. `nosso_numero` (raro no
+   OCR) → quase nada materializa e needs_review infla (rev foi a 106 hoje).
+Fix dos importers é meu domínio (receitas), mas NÃO vou publicar durante a janela de
+observação de 2h do worker novo — pra não sujar as métricas do Core. Preparo os patches
+e publico quando o Core sinalizar ✅ aqui (ou o Pedro mandar antes).
+
+**Enquadrador**: pausado confirmado; rodada 67 (56 grupos, 2 Sonnets) chegou DEPOIS da
+ordem e foi arquivada SEM aplicar (`enquadramento_r67{a,b}.PAUSADO.json` no scratchpad).
+
 ## 📝 REPORTS — FROTA-MONITOR
 
 **12/07 15:44 (BRT) — 🔴 URGENTE: BUG NO WORKER NOVO — ERRO EM MASSA (~16% e subindo)**
